@@ -22,7 +22,7 @@ fun NavigationRoot(
     NavHost(
         navController = navController,
         route = Graph.ROOT,
-        startDestination = Graph.HOME,
+        startDestination = Graph.SPLASH,
         modifier = modifier
     ) {
         composable(Graph.SPLASH) {
@@ -62,8 +62,8 @@ fun HomeNavGraph(
 }
 
 sealed class HomeScreens(val route:String, val title:String, val icon:Int) {
-    object HomeScreen : HomeScreens("home_screen", "Home", R.drawable.ic_home)
-    object HelpScreen : HomeScreens("help_screen", "Help", R.drawable.ic_help)
+    object HomeScreen : HomeScreens("home_screen", "Inicio", R.drawable.ic_home)
+    object HelpScreen : HomeScreens("help_screen", "Ayuda", R.drawable.ic_help)
 }
 
 object Graph {
