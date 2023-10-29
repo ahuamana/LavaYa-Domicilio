@@ -30,8 +30,7 @@ fun NavigationRoot(
         }
 
         composable(Graph.HOME) {
-            val navHostController = rememberNavController()
-            DashboardScreen(navHostController)
+            DashboardScreen()
         }
 
     }

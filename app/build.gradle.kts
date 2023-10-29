@@ -72,7 +72,8 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
 
     //add material
-    implementation(libs.androidx.compose.material)
+    //implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)
 
     //maps compose
     implementation(libs.maps.compose)

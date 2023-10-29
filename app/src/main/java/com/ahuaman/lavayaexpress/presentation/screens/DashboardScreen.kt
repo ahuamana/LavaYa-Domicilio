@@ -1,8 +1,18 @@
 package com.ahuaman.lavayaexpress.presentation.screens
 
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -21,22 +31,72 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ahuaman.lavayaexpress.R
 import com.ahuaman.lavayaexpress.presentation.navigation.HomeNavGraph
 import com.ahuaman.lavayaexpress.presentation.navigation.HomeScreens
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberNavController()
 ) {
-    println("DashboardScreen")
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            BottomBarCustom(navController = navController)
+            //BottomBarCustom(navController = navController)
         }
     ) { innerPadding ->
+
         //content
-        HomeNavGraph(navController = navController, innerPadding = innerPadding)
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+        ) {
+            //HomeScreen()
+            HomeNavGraph(navController = navController, innerPadding = innerPadding)
+            TopMenuBar(
+                onClickHelp = {
+                    if(navController.currentDestination?.route != HomeScreens.HelpScreen.route) navController.navigate(HomeScreens.HelpScreen.route)
+                              },
+                onClickHome = {
+                    if(navController.currentDestination?.route != HomeScreens.HomeScreen.route) navController.navigate(HomeScreens.HomeScreen.route)
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopMenuBar(
+    onClickHelp: () -> Unit = {},
+    onClickHome: () -> Unit = {},
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Card(
+            modifier = Modifier.padding(16.dp),
+            shape = RoundedCornerShape(20.dp),
+            onClick = { onClickHome() }) {
+            Icon(
+                modifier = Modifier
+                    .padding(6.dp),
+                painter = painterResource(id = R.drawable.ic_menu),
+                contentDescription = null)
+        }
+
+        Card(
+            modifier = Modifier.padding(16.dp),
+            shape = RoundedCornerShape(20.dp),
+            onClick = { onClickHelp() }) {
+            Icon(
+                modifier = Modifier
+                    .padding(6.dp),
+                painter = painterResource(id = R.drawable.ic_help),
+                contentDescription = null)
+        }
     }
 }
 
