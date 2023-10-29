@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.secretGradlePlugin)
 }
 
 android {
@@ -9,7 +10,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.lavayadomicilio.client"
+        applicationId = "com.lavaya.domicilio.client"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -72,4 +73,9 @@ dependencies {
 
     //add material
     implementation(libs.androidx.compose.material)
+
+    //maps compose
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
+
 }
