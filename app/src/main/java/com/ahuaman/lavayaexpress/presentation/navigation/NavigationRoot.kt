@@ -3,7 +3,10 @@ package com.ahuaman.lavayaexpress.presentation.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +16,7 @@ import com.ahuaman.lavayaexpress.presentation.screens.DashboardScreen
 import com.ahuaman.lavayaexpress.presentation.screens.HelpScreen
 import com.ahuaman.lavayaexpress.presentation.screens.HomeScreen
 import com.ahuaman.lavayaexpress.presentation.screens.SplashScreen
+import com.ahuaman.lavayaexpress.presentation.viewmodel.HomeViewModel
 
 @Composable
 fun NavigationRoot(
@@ -49,7 +53,16 @@ fun HomeNavGraph(
         startDestination = HomeScreens.HomeScreen.route,
     ) {
         composable(HomeScreens.HomeScreen.route) {
-            HomeScreen()
+            val homeViewModel = hiltViewModel<HomeViewModel>()
+
+            val stateDirection by homeViewModel.directionState.collectAsStateWithLifecycle()
+
+            HomeScreen(
+                stateDirection = stateDirection,
+                onChangeLocation = { direction ->
+                    homeViewModel.setDirection(direction = direction)
+                }
+            )
         }
 
         composable(HomeScreens.HelpScreen.route) {

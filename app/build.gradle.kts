@@ -1,8 +1,11 @@
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.secretGradlePlugin)
+    alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.hiltPlugin)
 }
 
 android {
@@ -32,11 +35,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         compose = true
@@ -77,6 +80,20 @@ dependencies {
 
     //maps compose
     implementation(libs.maps.compose)
-    implementation(libs.play.services.maps)
+    //implementation(libs.play.services.maps)
+
+    //hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+
+    //hilt navigation compose
+    implementation(libs.hilt.navigation.compose)
+
+    //lifecycle
+    implementation(libs.lifecycle.viewmodel.compose) // viewModel
+    implementation(libs.lifecycle.runtime.compose) //collectAsStateWithLifecycle
+
+
 
 }

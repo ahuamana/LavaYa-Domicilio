@@ -1,5 +1,7 @@
 package com.ahuaman.lavayaexpress.presentation.screens
 
+import android.location.Geocoder
+import android.location.Geocoder.GeocodeListener
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +23,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -39,8 +43,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahuaman.lavayaexpress.R
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
@@ -48,7 +56,12 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    stateDirection:String,
+    onChangeLocation: (String) -> Unit = {},
+) {
+
+    val context = LocalContext.current
 
     val uiSettings = MapUiSettings(
         compassEnabled = true,
@@ -57,18 +70,22 @@ fun HomeScreen() {
         tiltGesturesEnabled = true,
     )
 
+    //Huancayo Peru
+    val huancayo = LatLng(-12.0652, -75.2049)
+    val singapore = LatLng(1.35, 103.87)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(singapore, 10f)
+    }
     //Default location Huancayo - Peru
     Box(modifier = Modifier.fillMaxSize()) {
-        val defaultLocation = LatLng(-12.070830, 75.206680)
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(defaultLocation, 15f)
-        }
+
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            uiSettings = uiSettings,
-            onMapClick = { /* TODO */ },
-        ) {/* TODO */}
+            onMapLoaded = {
+                cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(huancayo, 15f))
+            },
+        )
 
         //Marker center
         MarkerCenter()
@@ -79,19 +96,24 @@ fun HomeScreen() {
         latitud = cameraPositionState.position.target.latitude
         longitud = cameraPositionState.position.target.longitude
 
+        val addressAll = Geocoder(context).getFromLocation(
+            cameraPositionState.position.target.latitude,
+            cameraPositionState.position.target.longitude,
+            1,
+        )
 
+        //Make variable for address
+        val addressText = addressAll?.firstOrNull()?.getAddressLine(0) ?: "No address found"
+       onChangeLocation(addressText)
+
+        println("addressText: $addressText")
 
         //Content
         HomeContent(
-            "Lat: $latitud, Lng: $longitud"
+            stateDirection
         )
-
-        //Lat and Lng
-        /*Text(text = "is Camera Moving: ${cameraPositionState.isMoving}" +
-                "\nLat: ${cameraPositionState.position.target.latitude}" +
-                "\nLng: ${cameraPositionState.position.target.longitude}",
-            textAlign = TextAlign.Center)*/
     }
+
 }
 
 
@@ -118,16 +140,14 @@ fun HomeContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        //var query by remember { mutableStateOf("") }
         var text by rememberSaveable { mutableStateOf("") }
-        var onSearch by remember { mutableStateOf("") }
         var active by rememberSaveable { mutableStateOf(false) }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         ) {
-            Text(text = "¿A dónde quiere que lleguemos?",
+            Text(text = "¿A dónde desea que lleguemos?",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -146,8 +166,10 @@ fun HomeContent(
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = onSearch,
-                    onValueChange = { onValueChange = it },
-                    label = { Text(text = "Ingresa su dirección") },
+                    onValueChange = { value ->
+                        onValueChange = value
+                    },
+                    label = { Text(text = "Ingrese su dirección") },
 
                     leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
                     //trailingIcon = { Icon(Icons.Rounded.MoreVert, contentDescription = null) },
@@ -166,7 +188,7 @@ fun HomeContent(
                     Text(
                         modifier = Modifier.padding(4.dp),
                         fontSize = 18.sp,
-                        text = "Solicitar Servicio",
+                        text = "Solicitar servicio",
                         fontFamily = FontFamily(Font(R.font.googlesans_regular)),
                     )
                 }
@@ -184,5 +206,7 @@ fun HomeContent(
 @Preview
 @Composable
 fun HomeScreenPrev() {
-    HomeScreen()
+    HomeScreen(
+        stateDirection = "Huancayo - Peru"
+    )
 }

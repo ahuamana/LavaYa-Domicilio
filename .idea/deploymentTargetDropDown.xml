@@ -2,20 +2,11 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="HelpPreview">
-        <State />
-      </entry>
-      <entry key="HomeScreenPrev">
-        <State />
-      </entry>
-      <entry key="SplashPreview">
-        <State />
-      </entry>
-      <entry key="app">
+      <entry key="GoogleMapsTestPreview">
         <State>
-          <targetSelectedWithDropDown>
+          <runningDeviceTargetSelectedWithDropDown>
             <Target>
-              <type value="QUICK_BOOT_TARGET" />
+              <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
@@ -23,9 +14,18 @@
                 </Key>
               </deviceKey>
             </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-10-29T18:07:20.854353Z" />
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-10-29T23:29:42.070465Z" />
         </State>
+      </entry>
+      <entry key="HelpPreview">
+        <State />
+      </entry>
+      <entry key="HomeScreenPrev">
+        <State />
+      </entry>
+      <entry key="app">
+        <State />
       </entry>
     </value>
   </component>
