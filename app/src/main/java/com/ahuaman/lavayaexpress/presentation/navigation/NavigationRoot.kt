@@ -70,18 +70,23 @@ fun HomeNavGraph(
         startDestination = HomeScreens.HomeScreen.route,
     ) {
         composable(HomeScreens.HomeScreen.route) {
+            //Init
+            val context = LocalContext.current
+            val activity = LocalContext.current.findActivity()
             val homeViewModel = hiltViewModel<HomeViewModel>()
-            homeViewModel.fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current)
+            homeViewModel.initFusedLocationClient(context)
+            homeViewModel.initGeoCoder(context)
+
+            //States
             val stateDirection by homeViewModel.directionState.collectAsStateWithLifecycle()
 
+            //Permissions
             val locationPermissionState = rememberMultiplePermissionsState(
                 listOf(
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             )
-
-            val activity = LocalContext.current.findActivity()
 
             LaunchedEffect(locationPermissionState.allPermissionsGranted) {
                 if (locationPermissionState.allPermissionsGranted) {
@@ -92,12 +97,11 @@ fun HomeNavGraph(
                     }
                 }
             }
-            
 
             HomeScreen(
                 stateDirection = stateDirection,
-                onChangeLocation = { direction ->
-                    homeViewModel.setDirection(direction = direction)
+                onChangeLocation = { location ->
+                    homeViewModel.updateDirectionFromLocation(location = location)
                 }
             )
 

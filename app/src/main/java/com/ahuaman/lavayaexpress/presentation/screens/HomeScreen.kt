@@ -58,7 +58,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
 fun HomeScreen(
     stateDirection:String,
-    onChangeLocation: (String) -> Unit = {},
+    onChangeLocation: (LatLng) -> Unit = {},
 ) {
 
     val context = LocalContext.current
@@ -78,35 +78,27 @@ fun HomeScreen(
     }
     //Default location Huancayo - Peru
     Box(modifier = Modifier.fillMaxSize()) {
+        val uiSettings = MapUiSettings(
+            zoomControlsEnabled = false,
+        )
 
         GoogleMap(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(bottom = 200.dp),
             cameraPositionState = cameraPositionState,
+            uiSettings = uiSettings,
             onMapLoaded = {
                 cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(huancayo, 15f))
             },
         )
-
         //Marker center
-        MarkerCenter()
-
-        var latitud by rememberSaveable { mutableStateOf(0.0) }
-        var longitud by rememberSaveable { mutableStateOf(0.0) }
-
-        latitud = cameraPositionState.position.target.latitude
-        longitud = cameraPositionState.position.target.longitude
-
-        val addressAll = Geocoder(context).getFromLocation(
-            cameraPositionState.position.target.latitude,
-            cameraPositionState.position.target.longitude,
-            1,
+        MarkerCenter(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 200.dp)
         )
 
-        //Make variable for address
-        val addressText = addressAll?.firstOrNull()?.getAddressLine(0) ?: "No address found"
-       onChangeLocation(addressText)
-
-        println("addressText: $addressText")
+        //Send location to viewmodel to get direction
+        onChangeLocation(cameraPositionState.position.target)
 
         //Content
         HomeContent(
@@ -118,9 +110,11 @@ fun HomeScreen(
 
 
 @Composable
-fun MarkerCenter() {
+fun MarkerCenter(
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

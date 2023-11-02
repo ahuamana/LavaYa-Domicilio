@@ -36,7 +36,6 @@ import com.ahuaman.lavayaexpress.presentation.navigation.HomeNavGraph
 import com.ahuaman.lavayaexpress.presentation.navigation.HomeScreens
 import com.google.maps.android.compose.GoogleMap
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     navController: NavHostController = rememberNavController()
