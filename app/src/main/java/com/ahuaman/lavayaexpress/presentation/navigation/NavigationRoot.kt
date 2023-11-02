@@ -1,10 +1,14 @@
 package com.ahuaman.lavayaexpress.presentation.navigation
 
+import android.Manifest
+import android.app.Activity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -17,6 +21,10 @@ import com.ahuaman.lavayaexpress.presentation.screens.HelpScreen
 import com.ahuaman.lavayaexpress.presentation.screens.HomeScreen
 import com.ahuaman.lavayaexpress.presentation.screens.SplashScreen
 import com.ahuaman.lavayaexpress.presentation.viewmodel.HomeViewModel
+import com.ahuaman.lavayaexpress.utils.findActivity
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
 
 @Composable
 fun NavigationRoot(
@@ -41,11 +49,14 @@ fun NavigationRoot(
 
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeNavGraph(
     navController: NavHostController,
     innerPadding: PaddingValues,
 ) {
+    val context = LocalContext.current
+
     NavHost(
         modifier = Modifier.padding(innerPadding),
         navController = navController,
@@ -54,8 +65,28 @@ fun HomeNavGraph(
     ) {
         composable(HomeScreens.HomeScreen.route) {
             val homeViewModel = hiltViewModel<HomeViewModel>()
-
+            homeViewModel.fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current)
             val stateDirection by homeViewModel.directionState.collectAsStateWithLifecycle()
+
+            val locationPermissionState = rememberMultiplePermissionsState(
+                listOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            )
+
+            val activity = LocalContext.current.findActivity()
+
+            LaunchedEffect(locationPermissionState.allPermissionsGranted) {
+                if (locationPermissionState.allPermissionsGranted) {
+                    if (locationEnabled(activity)) {
+                        homeViewModel.getCurrentLocation()
+                    } else {
+                        homeViewModel.disableLocation()
+                    }
+                }
+            }
+            
 
             HomeScreen(
                 stateDirection = stateDirection,
@@ -63,6 +94,8 @@ fun HomeNavGraph(
                     homeViewModel.setDirection(direction = direction)
                 }
             )
+
+
         }
 
         composable(HomeScreens.HelpScreen.route) {
@@ -70,8 +103,14 @@ fun HomeNavGraph(
         }
 
     }
-    
 }
+
+private fun locationEnabled(activity:Activity?): Boolean {
+    val locationManager = activity?.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
+    return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+}
+
+
 
 sealed class HomeScreens(val route:String, val title:String, val icon:Int) {
     object HomeScreen : HomeScreens("home_screen", "Inicio", R.drawable.ic_home)

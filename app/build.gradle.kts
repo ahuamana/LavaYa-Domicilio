@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -80,7 +81,8 @@ dependencies {
 
     //maps compose
     implementation(libs.maps.compose)
-    //implementation(libs.play.services.maps)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
 
     //hilt
     implementation(libs.hilt.android)
@@ -94,6 +96,12 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose) // viewModel
     implementation(libs.lifecycle.runtime.compose) //collectAsStateWithLifecycle
 
+
+    //permission
+    implementation(libs.accompanist.permissions)
+
+    //lottie
+    implementation(libs.lottie.compose)
 
 
 }
