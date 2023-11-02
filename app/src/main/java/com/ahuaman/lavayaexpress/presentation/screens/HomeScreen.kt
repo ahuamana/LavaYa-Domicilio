@@ -3,6 +3,8 @@ package com.ahuaman.lavayaexpress.presentation.screens
 import android.location.Geocoder
 import android.location.Geocoder.GeocodeListener
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -146,9 +149,10 @@ fun HomeContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End) {
             Card(
-                modifier = Modifier.padding(16.dp),
-                shape = RoundedCornerShape(20.dp),
-                onClick = { /**/ }) {
+                modifier = Modifier
+                    .padding(16.dp),
+                shape = RoundedCornerShape(20.dp)
+            ) {
                 Icon(
                     modifier = Modifier
                         .padding(6.dp),
@@ -158,7 +162,8 @@ fun HomeContent(
         }
 
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         ) {
             Text(text = "¿A dónde desea que lleguemos?",
