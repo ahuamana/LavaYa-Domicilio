@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -83,7 +84,9 @@ fun HomeScreen(
         )
 
         GoogleMap(
-            modifier = Modifier.fillMaxSize().padding(bottom = 200.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 200.dp),
             cameraPositionState = cameraPositionState,
             uiSettings = uiSettings,
             onMapLoaded = {
@@ -124,10 +127,12 @@ fun MarkerCenter(
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContent(
     onSearch: String = "",
 ) {
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom,
@@ -136,6 +141,21 @@ fun HomeContent(
 
         var text by rememberSaveable { mutableStateOf("") }
         var active by rememberSaveable { mutableStateOf(false) }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End) {
+            Card(
+                modifier = Modifier.padding(16.dp),
+                shape = RoundedCornerShape(20.dp),
+                onClick = { /**/ }) {
+                Icon(
+                    modifier = Modifier
+                        .padding(6.dp),
+                    painter = painterResource(id = R.drawable.ic_my_location),
+                    contentDescription = null)
+            }
+        }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
