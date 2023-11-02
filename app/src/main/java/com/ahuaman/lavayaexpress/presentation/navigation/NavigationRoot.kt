@@ -38,7 +38,13 @@ fun NavigationRoot(
         modifier = modifier
     ) {
         composable(Graph.SPLASH) {
-            SplashScreen(onNextScreen = { navController.navigate(route = Graph.HOME) })
+            SplashScreen(onNextScreen = {
+                navController.navigate(Graph.HOME) {
+                    popUpTo(Graph.SPLASH) {
+                        inclusive = true
+                    }
+                }
+            })
         }
 
         composable(Graph.HOME) {
